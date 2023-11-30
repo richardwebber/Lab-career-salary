@@ -5,7 +5,7 @@ const Description = (props) => {
   const {isEditing, value, onValueChange} = props;
 
   return isEditing ? (
-    <td>
+    <td >
       <input 
       type="text" 
       value={value}
