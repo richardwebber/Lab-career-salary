@@ -5,6 +5,7 @@ import ModeButtons from './ModeButtons.jsx';
 import Rate from './Rate.jsx';
 import formatCurrency from '../utils/formatCurrency.js';
 import { useState } from 'react';
+import axios from 'axios';
 
 const TableRow = (props) => {
 
@@ -18,20 +19,37 @@ const TableRow = (props) => {
 
   const changeEditMode = () => setIsEditing(true)
   const changeNormalMode = () => {
-    const copyData = [...currentData]
 
-    const indexToChange = copyData.findIndex(el => el.id === initialInvoiceData.id)
-
-    const editedRow = {
-      id: initialInvoiceData.id,
+    const bodyObj = {
       description,
       rate,
       hours
     }
 
-    copyData.splice(indexToChange, 1, editedRow)
+    axios.put(`/invoice/${initialInvoiceData.id}`, bodyObj)
+    .then((res) => {
+      console.log(res.data)
+      setCurrentData(res.data)
+      setIsEditing(false)
+    })
+    .catch((theseHands) => {
+      console.log(theseHands)
+    })
 
-    setCurrentData(copyData)
+  //   const copyData = [...currentData]
+
+  //   const indexToChange = copyData.findIndex(el => el.id === initialInvoiceData.id)
+
+  //   const editedRow = {
+  //     id: initialInvoiceData.id,
+  //     description,
+  //     rate,
+  //     hours
+  //   }
+
+  //   copyData.splice(indexToChange, 1, editedRow)
+
+  //   setCurrentData(copyData)
   }
 
   return (

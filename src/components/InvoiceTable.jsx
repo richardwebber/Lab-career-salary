@@ -1,4 +1,5 @@
 import './InvoiceTable.css';
+import axios from 'axios'
 
 import AddButton from './AddButton.jsx';
 import Description from './Description.jsx';
@@ -8,40 +9,69 @@ import Rate from './Rate.jsx';
 import TableHeader from './TableHeader.jsx';
 import TableRow from './TableRow.jsx'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-let globalId = 4;
 
-const InvoiceTable = (props) => {
-    const {initialData} = props;
+const InvoiceTable = () => {
+    // const {initialData} = props;
 
-    const [currentData, setCurrentData] = useState(initialData)
+    const [currentData, setCurrentData] = useState([])
+
+    useEffect(() => {
+        axios.get('/invoices')
+        .then((res) => {
+            console.log(res.data)
+            setCurrentData(res.data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }, [])
 
     const addRow = () => {
-        const dataCopy = [...currentData]
 
-        const newRow = {
-            id: globalId,
-            description: '',
-            rate: '',
-            hours: ''
-        }
+        axios.post('/invoice', {description: 'A really cool job'})
+        .then((res) => {
+            console.log(res.data)
+            setCurrentData(res.data)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
 
-        dataCopy.push(newRow)
+        // const dataCopy = [...currentData]
 
-        setCurrentData(dataCopy)
+        // const newRow = {
+        //     id: globalId,
+        //     description: '',
+        //     rate: '',
+        //     hours: ''
+        // }
 
-        globalId++;
+        // dataCopy.push(newRow)
+
+        // setCurrentData(dataCopy)
+
+        // globalId++;
     }
 
     const deleteRow = (id) => {
-        const filteredData = currentData.filter((row) => row.id !== id)
+        
+        axios.delete(`/invoice/${id}`)
+        .then((res)=> {
+            console.log(res.data)
+            setCurrentData(res.data)
+        })
+        .catch((thesehands) => {
+            console.log(thesehands)
+        })
+
         setCurrentData(filteredData)
     }
 
     const rows = currentData.map((el) => <TableRow
      initialInvoiceData={el}
-      initialEditMode={false}
+     initialEditMode={false}
        key={el.id}
        deleteRow={() => deleteRow(el.id)}
        currentData={currentData}
